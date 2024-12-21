@@ -22,16 +22,4 @@ public class MenuManager {
         menuList.add(new Menu("Milk tea", 4000));
         return menuList;
     }
-
-    public void selectMenu() {
-        System.out.println("select menu by number or name");
-        List<Menu> menuList = this.showMenuList();
-        for(int i = 0; i < menuList.size(); i++) {
-            Menu menu = menuList.get(i);
-            String name = menu.getName();
-            int price = menu.getPrice();
-            System.out.println(String.valueOf(i+1) + " " + name + " / " + price);
-        }
-    }
-
 }

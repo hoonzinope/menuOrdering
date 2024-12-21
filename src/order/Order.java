@@ -1,5 +1,7 @@
 package order;
 
+import common.StringUtils;
+import discount.DiscountPolicy;
 import menu.MenuItem;
 
 import java.time.LocalDateTime;
@@ -10,10 +12,16 @@ public class Order {
     private List<MenuItem> itemList;
     private LocalDateTime orderDateTime;
 
+    private DiscountPolicy discountPolicy;
+
     public Order(){
         this.itemList = new ArrayList<>();
         this.orderName = this.createRandomOrderName();
         this.orderDateTime = LocalDateTime.now();
+    }
+
+    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
+        this.discountPolicy = discountPolicy;
     }
 
     public void addItem(MenuItem menuItem) {
@@ -23,39 +31,53 @@ public class Order {
     public String currentOrder() {
         StringBuilder sb = new StringBuilder();
         sb.append("order ["+orderName+"]\n");
-        for(MenuItem menuItem : itemList) {
-            sb.append("-- "+menuItem+"\n");
+        for(int i = 0; i < itemList.size(); i++) {
+            MenuItem menuItem = itemList.get(i);
+            sb.append((i+1)+" -- "+menuItem+"\n");
         }
         sb.append("total price = "+this.getTotalPrice()+"\n");
         sb.append("order date "+this.orderDateTime+"\n");
         return sb.toString();
     }
 
-    public int getTotalPrice() {
+    public void isCancelMenuItem() {
+        System.out.println("if cancel order ? Y/N");
+        Scanner sc = new Scanner(System.in);
+        if(sc.next().equals("Y"))
+            this.cancelMenu();
+    }
+
+    private void cancelMenu() {
+        int cancelNum = 0;
+        while(true) {
+            System.out.println("insert cancel menu number");
+            Scanner sc = new Scanner(System.in);
+            String strNum = sc.next();
+            if(strNum == null || strNum.equals("") || !StringUtils.isNumeric(strNum)){
+                System.out.println("cancel menu number error");
+                continue;
+            }
+            cancelNum = Integer.parseInt(strNum) - 1;
+            if(0 <= cancelNum || cancelNum < this.itemList.size()){
+                this.itemList.remove(cancelNum);
+                break;
+            }else{
+                System.out.println("cancel menu number over/under flow error");
+                continue;
+            }
+        }
+        System.out.println("menu item remove success");
+    }
+
+    private int getTotalPrice() {
         int totalPrice = 0;
         for(MenuItem menuItem : this.itemList) {
             totalPrice += menuItem.getPrice();
         }
-        return totalPrice;
+        return discountPolicy.applyPolicy(totalPrice);
     }
 
     private String createRandomOrderName(){
-        Random random = new Random();
-        StringBuilder stringBuilder = new StringBuilder();
-        // a = 97 / A = 65;
-        for(int i = 0; i < 10; i++){
-            int UL = random.nextInt(3);
-            if(UL == 1) UL = 97;
-            else if(UL == 2)UL = 65;
-            else UL = 0;
-
-            int r = random.nextInt(26);
-            int n = random.nextInt(10);
-            if(UL == 0)
-                stringBuilder.append(UL+n);
-            else
-                stringBuilder.append((char)(UL+r));
-        }
-        return stringBuilder.toString();
+        return StringUtils.getRandomString(10);
     }
 }
