@@ -4,7 +4,7 @@ public class FixedPriceDiscountPolicy implements DiscountPolicy{
 
     private final int fixedDiscountPrice;
 
-    public FixedPriceDiscountPolicy(int discountPrice) {
+    public FixedPriceDiscountPolicy(int discountPrice){
         fixedDiscountPrice = discountPrice;
     }
 

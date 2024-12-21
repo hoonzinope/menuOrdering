@@ -40,36 +40,14 @@ public class Order {
         return sb.toString();
     }
 
-    public void isCancelMenuItem() {
-        System.out.println("if cancel order ? Y/N");
-        Scanner sc = new Scanner(System.in);
-        if(sc.next().equals("Y"))
-            this.cancelMenu();
+    public void cancelMenu(int menu_index) throws IllegalArgumentException{
+        if(0 <= menu_index && menu_index < this.itemList.size())
+            this.itemList.remove(menu_index);
+        else
+            throw new IllegalArgumentException("remove failed. check menu index");
     }
 
-    private void cancelMenu() {
-        int cancelNum = 0;
-        while(true) {
-            System.out.println("insert cancel menu number");
-            Scanner sc = new Scanner(System.in);
-            String strNum = sc.next();
-            if(strNum == null || strNum.equals("") || !StringUtils.isNumeric(strNum)){
-                System.out.println("cancel menu number error");
-                continue;
-            }
-            cancelNum = Integer.parseInt(strNum) - 1;
-            if(0 <= cancelNum || cancelNum < this.itemList.size()){
-                this.itemList.remove(cancelNum);
-                break;
-            }else{
-                System.out.println("cancel menu number over/under flow error");
-                continue;
-            }
-        }
-        System.out.println("menu item remove success");
-    }
-
-    private int getTotalPrice() {
+    public int getTotalPrice() {
         int totalPrice = 0;
         for(MenuItem menuItem : this.itemList) {
             totalPrice += menuItem.getPrice();

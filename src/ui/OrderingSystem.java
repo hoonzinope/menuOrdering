@@ -1,5 +1,6 @@
 package ui;
 
+import common.StringUtils;
 import discount.NoDiscountPolicy;
 import menu.Menu;
 import menu.MenuItem;
@@ -31,8 +32,7 @@ public class OrderingSystem {
             order.addItem(menuItem);
 
             // 3-1. cancel order
-            System.out.println(order.currentOrder());
-            order.isCancelMenuItem();
+            this.isCancelMenuItem(order);
 
             // end check
             System.out.println("if exit ? Y / N");
@@ -42,5 +42,30 @@ public class OrderingSystem {
             }
         }
         System.out.println(order.currentOrder());
+    }
+
+    private void isCancelMenuItem(Order order) {
+        System.out.println("if cancel order ? Y/N");
+        Scanner sc = new Scanner(System.in);
+        if(sc.next().equals("Y")){
+            int cancelNum = 0;
+            while(true) {
+                System.out.println("insert cancel menu number");
+                sc = new Scanner(System.in);
+                String strNum = sc.next();
+                if(strNum == null || strNum.equals("") || !StringUtils.isNumeric(strNum)){
+                    System.out.println("cancel menu number error");
+                    continue;
+                }
+                cancelNum = Integer.parseInt(strNum) - 1;
+                try{
+                    order.cancelMenu(cancelNum);
+                    break;
+                }catch (IllegalArgumentException e){
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("menu item remove success");
+        }
     }
 }
